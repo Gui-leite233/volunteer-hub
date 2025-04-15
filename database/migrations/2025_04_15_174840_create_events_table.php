@@ -11,8 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::create('status', function (Blueprint $table) {
+            $table->id()->unique()->primary();
+            $table->string('name');
+        });
+    
+        DB::table('status')->insert([
+            ['name'=>'confimado'],
+            ['name'=>'lista de espera']
+        ]);
+
         Schema::create('events', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id()->unique()->primary();
             $table->string('name');
             $table->text('description');
             $table->geography('location', subtype: 'point', srid: 4326);

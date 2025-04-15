@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('roles', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id()->unique()->primary();
             $table->string('name')->unique();
             $table->string('guard_name')->default('web');
             $table->timestamps();
