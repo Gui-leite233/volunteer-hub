@@ -1,0 +1,64 @@
+generator client {
+provider = "prisma-client-js"
+}
+
+datasource db {
+provider = "mysql" // or postgresql, sqlite, etc.
+url      = env("DATABASE_URL")
+}
+
+model User {
+id                Int            @id @default(autoincrement())
+name              String
+email             String         @unique
+email_verified_at DateTime?
+password          String
+remember_token    String?
+events            Event[]
+registrations     Registration[]
+role_id           Int?
+role              Role?          @relation(fields: [role_id], references: [id])
+created_at        DateTime       @default(now())
+updated_at        DateTime       @updatedAt
+}
+
+model Event {
+id            Int            @id @default(autoincrement())
+name          String
+description   String
+location      String
+date          DateTime
+capacity      Int
+category      String
+user_id       Int
+user          User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
+registrations Registration[]
+created_at    DateTime       @default(now())
+updated_at    DateTime       @updatedAt
+}
+
+model Registration {
+id         Int      @id @default(autoincrement())
+review     String?
+user_id    Int
+event_id   Int
+status_id  Int
+user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+event      Event    @relation(fields: [event_id], references: [id], onDelete: Cascade)
+status     Status   @relation(fields: [status_id], references: [id], onDelete: Cascade)
+created_at DateTime @default(now())
+updated_at DateTime @updatedAt
+}
+
+model Status {
+id            Int            @id @default(autoincrement())
+name          String
+registrations Registration[]
+}
+
+model Role {
+id    Int    @id @default(autoincrement())
+name  String @unique
+guard_name String @default("web")
+users User[]
+}
