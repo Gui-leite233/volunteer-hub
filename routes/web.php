@@ -24,4 +24,22 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+
+// Event routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
+    // Event routes
+    Route::resource('events', EventController::class);
+    
+    // Registration routes
+    Route::post('/events/{event}/register', [RegistrationController::class, 'store'])->name('registrations.store');
+    Route::delete('/registrations/{registration}', [RegistrationController::class, 'cancel'])->name('registrations.cancel');
+});
+
+// Public routes
+Route::get('/', [EventController::class, 'index'])->name('home');
+Route::get('/events', [EventController::class, 'index'])->name('events.index');
+Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
+
 require __DIR__.'/auth.php';
